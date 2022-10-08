@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Calculator</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h1>Calculator</h1>
     <div class="formstyle">
         <div id="history"></div>
         <form name="form">
-            <input id="calc" type="text" name="answer"
-                oninput="typedByKeyboard();"
-            >
+            <input id="calc" type="text" name="answer" oninput="typedByKeyboard();">
             <div id="history"></div>
             <div id="buttons"></div>
-            <input type="button"
-                onclick="addOperatorsToInputBox(operatorButtonValue = '&radic;')"
-            value="&radic;">
+            <input type="button" onclick="addOperatorsToInputBox(operatorButtonValue = '&radic;')" value="&radic;">
         </form>
-        <input type="button" value="Clear All"
-            id="clear"
-            onclick="clearInputBoxAndHistory()"
-        >
+        <input type="button" value="Clear All" id="clear" onclick="clearInputBoxAndHistory()">
     </div>
 
     <script>
@@ -45,31 +40,30 @@
 
         function displayNumbersInHtml() {
 
-            for (i = 0; i < numbers.length; i++)
-            {
+            for (i = 0; i < numbers.length; i++) {
                 numberButtons = document.createElement("button");
-                numberButtons.setAttribute("type", "button" );
+                numberButtons.setAttribute("type", "button");
                 numberButtons.innerHTML = numbers[i];
                 numberButtons.setAttribute("value", i);
-                numberButtons.setAttribute("onclick", 'addNumbersToInputBox(numberButtonValue = value)' );
+                numberButtons.setAttribute("onclick", 'addNumbersToInputBox(numberButtonValue = value)');
                 document.getElementById("buttons").appendChild(numberButtons);
             }
         }
 
-       function displayOperatorsInHtml() {
+        function displayOperatorsInHtml() {
             for (i = 0; i < operators.length; i++) {
-                operatorButtons=document.createElement("button");
-                operatorButtons.setAttribute("type", "button" ); operatorButtons.innerHTML=operators[i];
+                operatorButtons = document.createElement("button");
+                operatorButtons.setAttribute("type", "button");
+                operatorButtons.innerHTML = operators[i];
                 operatorButtons.setAttribute("value", operators[i]);
-                if (operators[i] === '=' ) {
-                    operatorButtons.setAttribute("onclick", 'getInputBoxValueAndDisplayAnswerAndHistory()' );
-                }
-                else {
-                    operatorButtons.setAttribute("onclick", 'addOperatorsToInputBox(operatorButtonValue = value)' );
+                if (operators[i] === '=') {
+                    operatorButtons.setAttribute("onclick", 'getInputBoxValueAndDisplayAnswerAndHistory()');
+                } else {
+                    operatorButtons.setAttribute("onclick", 'addOperatorsToInputBox(operatorButtonValue = value)');
                 }
                 document.getElementById("buttons").appendChild(operatorButtons);
             }
-       }
+        }
 
         function addNumbersToInputBox(numberButtonValue) {
             checkAndClearInputBoxIfEvaluationDone();
@@ -114,20 +108,17 @@
             } else if (lastCharacter == 'x') {
                 removeXSquareSign = inputBoxValue.substring(0, inputBoxValue.length - 1);
                 calculationAnswer = removeXSquareSign * removeXSquareSign;
-            }
-            else if (lastCharacter == '=') {
+            } else if (lastCharacter == '=') {
                 removeLastCharacter = inputBoxValue.substring(0, inputBoxValue.length - 1);
                 calculationAnswer = eval(removeLastCharacter);
-            }
-
-            else {
+            } else {
                 calculationAnswer = eval(inputBoxValue);
             }
 
             document.getElementById('calc').value = calculationAnswer;
 
 
-                calculationHistory.push(inputBoxValue + '=' + calculationAnswer + "<br>");
+            calculationHistory.push(inputBoxValue + '=' + calculationAnswer + "<br>");
 
             document.getElementById('history').innerHTML = "<p>" + calculationHistory + "</p> <br>";
             evaluationDone = true;
@@ -161,9 +152,9 @@
             inputBoxValue = document.getElementById('calc').value;
             lastCharacter = document.getElementById('calc').value.charAt(inputBoxValue.length - 1);
             lastCharacter = parseInt(lastCharacter);
-             if (numbers.includes(lastCharacter)) {
-                    return true;
-             }
+            if (numbers.includes(lastCharacter)) {
+                return true;
+            }
             return false;
         }
 
@@ -174,5 +165,4 @@
         }
     </script>
 </body>
-
 </html>
