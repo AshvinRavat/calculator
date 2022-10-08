@@ -11,7 +11,7 @@
     <div class="formstyle">
         <div id="history"></div>
         <form name="form">
-            <input id="calc" type="text" name="answer" oninput="clearInputBoxOnEvolution();">
+            <input id="calc" type="text" name="answer" oninput="typedByKeyboard();">
             <div id="history"></div>
             <div id="buttons"></div>
             <input type="button" onclick="addOperatorsToInputBox(operatorButtonValue = '&radic;')" value="&radic;">
@@ -41,9 +41,10 @@
             operatorButtons.setAttribute("type", "button");
             operatorButtons.innerHTML = operators[i];
             operatorButtons.setAttribute("value", operators[i]);
-            operatorButtons.setAttribute("onclick", 'addOperatorsToInputBox(operatorButtonValue = value)');
             if (operators[i] === '=') {
                 operatorButtons.setAttribute("onclick", 'getInputBoxValueAndDisplayAnswerAndHistory()');
+            } else {
+                operatorButtons.setAttribute("onclick", 'addOperatorsToInputBox(operatorButtonValue = value)');
             }
             document.getElementById("buttons").appendChild(operatorButtons);
         }
@@ -53,17 +54,15 @@
                 document.getElementById('calc').value = '';
                 evaluationDone = false;
             }
+
             inputBoxValue = document.getElementById('calc').value += numberButtonValue;
         }
 
         function addOperatorsToInputBox(operatorButtonValue) {
-            if (operatorButtonValue === '=') {
-                operatorButtonValue = '';
-            }
-
             if (operatorButtonValue == 'x2') {
                 operatorButtonValue = "x";
             }
+
             inputBoxValue = document.getElementById('calc').value += operatorButtonValue;
             evaluationDone = false;
         }
@@ -77,56 +76,58 @@
 
         function getInputBoxValueAndDisplayAnswerAndHistory() {
             inputBoxValue = document.getElementById('calc').value;
-            getInputBoxValueForPercentage = inputBoxValue.replace('%', '/100');
+            inputBoxValue = inputBoxValue.replace('%', '/100');
 
-            if (inputBoxValue.charAt(0).charCodeAt(0) === 8730) {
+            if (isSquareRootSign(inputBoxValue)) {
                 removeRadicCharacter = inputBoxValue.substring(1);
                 squareRootAnswer = Math.sqrt(removeRadicCharacter);
                 calculationAnswer = squareRootAnswer;
-                calculationHistory.push(inputBoxValue + '=' + calculationAnswer + "<br>");
-
             } else if (inputBoxValue.charAt(inputBoxValue.length - 1) == 'x') {
                 removeXSquare = inputBoxValue.substring(0, inputBoxValue.length - 1);
-                squareAnswer = removeXSquare * removeXSquare;
-                calculationAnswer = squareAnswer;
-                calculationHistory.push(inputBoxValue + '=' + calculationAnswer);
-
-            } else if (getInputBoxValueForPercentage) {
-                calculationAnswer = eval(getInputBoxValueForPercentage);
-                calculationHistory.push(inputBoxValue + '=' + calculationAnswer);
-
+                calculationAnswer = removeXSquare * removeXSquare;
             } else {
                 calculationAnswer = eval(inputBoxValue);
-                calculationHistory.push(inputBoxValue + '=' + calculationAnswer + "<br>");
             }
-            evaluationDone = true;
+
             document.getElementById('calc').value = calculationAnswer;
+            calculationHistory.push(inputBoxValue + '=' + calculationAnswer + "<br>");
             document.getElementById('history').innerHTML = "<p>" + calculationHistory + "</p> <br>";
+            evaluationDone = true;
         }
 
-        function clearInputBoxOnEvolution() {
-            if (evaluationDone) {
-                inputBoxValue = document.getElementById('calc').value;
-                checkInputBoxValue = document.getElementById('calc').value.
-                charAt(inputBoxValue.length - 1);
+        function isSquareRootSign(inputBoxValue) {
+            return inputBoxValue.charAt(0).charCodeAt(0) === 8730;
+        }
 
-                for (i = 0; i < operators.length; i++) {
-                    if (operators[i] === checkInputBoxValue &&
-                        evaluationDone) {
-                        evaluationDone = false;
-                        return;
-                    } else if (evaluationDone) {
-                        document.getElementById('calc').value = checkInputBoxValue;
-                        evaluationDone = false;
-                        return;
-                    }
+        function typedByKeyboard() {
+            if (!evaluationDone) {
+                return;
+            }
+
+            if (isNumberTyped()) {
+                document.getElementById('calc').value = lastCharacter;
+            }
+
+            evaluationDone = false;
+        }
+
+        function isNumberTyped() {
+            inputBoxValue = document.getElementById('calc').value;
+            lastCharacter = document.getElementById('calc').value.charAt(inputBoxValue.length - 1);
+
+            for (i = 0; i < numbers.length; i++) {
+                if (numbers[i] == lastCharacter) {
+                    return true;
                 }
             }
+
+            return false;
         }
 
         function clearInputBoxAndHistory() {
             document.getElementById('calc').value = '';
             document.getElementById('history').innerHTML = '';
+            calculationHistory = [];
         }
     </script>
 </body>
